@@ -1,38 +1,24 @@
- Changes a username on a remote Debian-like system via SSH. 
- Temporarily enables root login with password, renames the user,               
- then disables root login again and removes the temporary root password.
+# Remote Username Changer
 
- Requirements:
-   - Local: sshpass installed (sudo apt install sshpass)
-   - Remote: sudo-capable user with known password
-   - Remote: PasswordAuthentication yes in sshd_config
-   - Remote: Debian/Ubuntu-like system with systemctl or service
+**Securely rename a user account on a remote Debian/Ubuntu system via SSH**
 
- Security Warning:
-   - This script temporarily enables root login with password → security risk!
-   - Temporary root password exists only during execution.
-   - ALWAYS MAKE A BACKUP before running!
-   - Test thoroughly in a virtual machine first!
+This Bash script allows you to change a username (including home directory) on a remote Linux server without physical access. It uses a temporary root password to enable root SSH login briefly, performs the rename, and then disables root login again and removes the temporary password.
 
- SSH Terminal Allocation Notes (-t / -tt)
- =============================================================================
- Why -t or -tt is used:
-   -t / -tt forces allocation of a pseudo-terminal (pty) on the remote side.
-   Required because sudo and passwd commands inside Here-Documents (<< EOF)
-   often expect a terminal environment.
+**Important:** This is a **high-risk operation**. Always create a full backup (e.g. Timeshift, rsync, LVM snapshot) before running!
 
- Observed behavior in this script:
-   - -t (single)         → usually works reliably in this setup
-   - -tt (double)        → forces pty allocation more aggressively,
-                            but can cause hangs / connection failures
-                            with some sshd configurations or Here-Document usage
-   - Recommendation here: Use -q -t    (quiet + single force)
-                            → suppresses "Pseudo-terminal will not be allocated"
-                              warning and provides stable behavior
+## Features
 
- If you ever see:
-   sudo: sorry, you must have a tty to run sudo
-   → then try switching to -tt in the affected block only
+- Pre-checks: SSH login + sudo rights validation
+- Temporary root password activation (via `chpasswd`)
+- Temporary `PermitRootLogin yes` insertion at the top of `sshd_config`
+- Safe cleanup: removes temporary lines and root password
+- Final automatic login test with new username
+- Clear error messages and safety warnings
+- Uses `-q -t` SSH flags for stability (tested on Debian 12)
 
- Current setting in this script: -q -t
- =============================================================================
+## Requirements
+
+**Local machine (where you run the script):**
+- `sshpass` installed  
+  ```bash
+  sudo apt update && sudo apt install sshpass
