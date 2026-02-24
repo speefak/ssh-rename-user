@@ -1,8 +1,13 @@
  =============================================================================
+ 
  Script:       Remote Username Changer
+ 
  Description:  Changes a username on a remote Debian-like system via SSH.
+ 
                Temporarily enables root login with password, renames the user,
+               
                then disables root login again and removes the temporary root password.
+               
 
  Requirements:
    - Local: sshpass installed (sudo apt install sshpass)
