@@ -1,7 +1,5 @@
  =============================================================================
  Script:       Remote Username Changer
- Version:      0.8
- Date:         2026-02-24
  Description:  Changes a username on a remote Debian-like system via SSH.
                Temporarily enables root login with password, renames the user,
                then disables root login again and removes the temporary root password.
